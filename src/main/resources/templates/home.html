@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Home</title>
+
+<style>
+@import
+	url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap')
+	;
+
+body {
+	font-family: 'Poppins', sans-serif;
+	background: linear-gradient(135deg, #667eea, #764ba2);
+	min-height: 100vh;
+	margin: 0;
+	padding: 0;
+}
+
+header {
+	background: rgba(255, 255, 255, 0.15);
+	padding: 20px;
+	text-align: center;
+	color: white;
+	font-size: 22px;
+	font-weight: 600;
+}
+
+.container {
+	display: flex;
+	justify-content: center;
+	gap: 30px;
+	margin-top: 60px;
+	flex-wrap: wrap;
+}
+
+.card {
+	background: white;
+	width: 280px;
+	padding: 30px;
+	border-radius: 15px;
+	box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+	text-align: center;
+	cursor: pointer;
+	transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+	transform: translateY(-8px);
+	box-shadow: 0 25px 40px rgba(0, 0, 0, 0.3);
+}
+
+.card h3 {
+	margin-bottom: 10px;
+	color: #333;
+}
+
+.card p {
+	color: #666;
+	font-size: 14px;
+}
+
+/* Create Offer sub menu */
+.offer-options {
+	margin-top: 15px;
+	display: none;
+}
+
+.offer-options a {
+	display: block;
+	margin: 8px 0;
+	padding: 10px;
+	border-radius: 8px;
+	background: #667eea;
+	color: white;
+	text-decoration: none;
+	font-size: 14px;
+	transition: background 0.3s;
+}
+
+.offer-options a:hover {
+	background: #5563c1;
+}
+</style>
+
+<script>
+	function toggleOfferOptions() {
+		const options = document.getElementById("offerOptions");
+		options.style.display = options.style.display === "block" ? "none"
+				: "block";
+	}
+</script>
+</head>
+
+<body>
+
+	<header> HR Process Automation – Dashboard </header>
+
+	<div class="container">
+
+		<!-- Card 1: Create Offer -->
+		<div class="card" onclick="toggleOfferOptions()">
+			<h3>Create Offer</h3>
+			<p>Create and send job offers to candidates</p>
+
+			<div class="offer-options" id="offerOptions">
+				<a th:href="@{/offer/manual}">📄 Manual Offer Send</a> <a
+					th:href="@{/bulk-offer}">
+					<button class="action-btn">📊 Send Offer via CSV</button>
+				</a>
+			</div>
+		</div>
+
+		<!-- Card 2 -->
+		<a th:href="@{/candidates}" style="text-decoration: none;">
+			<div class="card">
+				<h3>View Candidates</h3>
+				<p>View and manage candidate details</p>
+			</div>
+		</a>
+
+		<!-- Card 3 -->
+		<div class="card">
+			<h3>Reports</h3>
+			<p>Download and analyze offer reports</p>
+		</div>
+
+	</div>
+
+</body>
+</html>

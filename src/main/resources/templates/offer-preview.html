@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Offer Preview</title>
+
+    <style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background: linear-gradient(120deg, #e0e7ff, #f8fafc);
+        margin: 0;
+        padding: 40px;
+    }
+
+    .container {
+        max-width: 1150px;
+        margin: auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+    }
+
+    .card {
+        position: relative;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(10px);
+        border-radius: 18px;
+        padding: 30px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 6px;
+        background: linear-gradient(90deg, #6366f1, #0d6efd);
+    }
+
+    .card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 30px 60px rgba(0,0,0,0.12);
+    }
+
+    h2 {
+        margin-top: 0;
+        margin-bottom: 20px;
+        color: #1f2937;
+        font-size: 22px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .field {
+        background: #f9fafb;
+        border-radius: 12px;
+        padding: 14px 16px;
+        margin-bottom: 14px;
+    }
+
+    .label {
+        font-size: 12px;
+        font-weight: 700;
+        color: #6b7280;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+
+    .value {
+        font-size: 17px;
+        font-weight: 600;
+        color: #111827;
+        margin-top: 4px;
+    }
+
+    iframe {
+        width: 100%;
+        height: 500px;
+        border-radius: 14px;
+        border: none;
+        background: #f1f5f9;
+        box-shadow: inset 0 0 0 1px #e5e7eb;
+    }
+
+    .actions {
+        grid-column: span 2;
+        display: flex;
+        justify-content: center;
+        gap: 24px;
+        margin-top: 35px;
+    }
+
+    button {
+        padding: 14px 28px;
+        font-size: 15px;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .send {
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+        color: white;
+        box-shadow: 0 10px 25px rgba(34,197,94,0.35);
+    }
+
+    .edit {
+        background: linear-gradient(135deg, #facc15, #fde047);
+        color: #1f2937;
+        box-shadow: 0 10px 25px rgba(250,204,21,0.35);
+    }
+
+    .back {
+        background: linear-gradient(135deg, #9ca3af, #6b7280);
+        color: white;
+    }
+
+    button:hover {
+        opacity: 0.95;
+    }
+
+    a {
+        text-decoration: none;
+    }
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+    <h1>📄 Offer Letter Preview</h1>
+</div>
+
+<div class="container">
+
+    <!-- OFFER DETAILS -->
+    <div class="card">
+        <h2>Candidate Details</h2>
+
+        <div class="field">
+            <div class="label">Name</div>
+            <div class="value" th:text="${offer.name}"></div>
+        </div>
+
+        <div class="field">
+            <div class="label">Position</div>
+            <div class="value" th:text="${offer.position}"></div>
+        </div>
+
+        <div class="field">
+            <div class="label">Salary</div>
+            <div class="value">₹ <span th:text="${offer.salary}"></span></div>
+        </div>
+
+        <div class="field">
+            <div class="label">Email</div>
+            <div class="value" th:text="${offer.email}"></div>
+        </div>
+    </div>
+
+    <!-- PDF PREVIEW -->
+    <div class="card">
+        <h2>Offer Letter PDF</h2>
+        <iframe th:src="'data:application/pdf;base64,' + ${pdfBase64}"></iframe>
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div class="actions">
+
+        <form th:action="@{/send-offer}" method="post">
+            <input type="hidden" name="name" th:value="${offer.name}">
+            <input type="hidden" name="position" th:value="${offer.position}">
+            <input type="hidden" name="salary" th:value="${offer.salary}">
+            <input type="hidden" name="email" th:value="${offer.email}">
+            <button class="send">📧 Send Offer</button>
+        </form>
+
+        <a th:href="@{/offer/edit/{id}(id=${offer.id})}">
+            <button type="button" class="edit">✏️ Edit Offer</button>
+        </a>
+
+        <a th:href="@{/home}">
+            <button type="button" class="back">⬅ Back</button>
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

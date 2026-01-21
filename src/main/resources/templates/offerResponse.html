@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Offer Response</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(120deg,#667eea,#764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 14px;
+            text-align: center;
+            width: 400px;
+        }
+        .success { color: #16a34a; }
+        .reject { color: #dc2626; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2 th:text="'Thank you, ' + ${name}"></h2>
+
+    <h3 th:class="${status == 'ACCEPTED'} ? 'success' : 'reject'"
+        th:text="'You have ' + ${status} + ' the offer'"></h3>
+
+    <p>Our HR team will contact you shortly.</p>
+</div>
+
+</body>
+</html>

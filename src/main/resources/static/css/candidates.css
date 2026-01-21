@@ -1,0 +1,100 @@
+body {
+    font-family: Arial, sans-serif;
+    padding: 30px;
+    background: #f4f6ff;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+/* FILTER */
+.filter {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 15px;
+}
+
+.custom-select {
+    position: relative;
+    width: 220px;
+}
+
+.custom-select select {
+    appearance: none;
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid #c7c9ff;
+    background: #eef2ff;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.custom-select .arrow {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #4f46e5;
+}
+
+/* TABLE */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 14px;
+    text-align: left;
+}
+
+th {
+    background: #6366f1;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background: #f9f9ff;
+}
+
+/* STATUS */
+.status {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.ACCEPTED {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.REJECTED {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.SENT {
+    background: #fef9c3;
+    color: #854d0e;
+}
+
+/* EDIT BUTTON */
+.edit-btn {
+    padding: 6px 14px;
+    border-radius: 8px;
+    background: #4f46e5;
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.edit-btn:hover {
+    background: #4338ca;
+}

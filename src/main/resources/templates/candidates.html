@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>View Candidates</title>
+    <link rel="stylesheet" href="/css/candidates.css">
+</head>
+<body>
+
+<h2>Candidate Details</h2>
+
+<!-- FILTER -->
+<div class="filter">
+    <form method="get" action="/candidates">
+        <div class="custom-select">
+            <select name="status" onchange="this.form.submit()">
+                <option value="ALL" th:selected="${selectedStatus == 'ALL'}">All Candidates</option>
+                <option value="SENT" th:selected="${selectedStatus == 'SENT'}">Pending</option>
+                <option value="ACCEPTED" th:selected="${selectedStatus == 'ACCEPTED'}">Accepted</option>
+                <option value="REJECTED" th:selected="${selectedStatus == 'REJECTED'}">Rejected</option>
+            </select>
+            <span class="arrow">▾</span>
+        </div>
+    </form>
+</div>
+
+<!-- TABLE -->
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Candidate Name</th>
+            <th>Email</th>
+            <th>Position</th>
+            <th>Candidate Response</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr th:each="offer, stat : ${offers}">
+            <td th:text="${stat.count}"></td>
+            <td th:text="${offer.name}"></td>
+            <td th:text="${offer.email}"></td>
+            <td th:text="${offer.position}"></td>
+
+            <!-- Candidate Response -->
+            <td>
+                <span class="status"
+                      th:text="${offer.status == 'ACCEPTED' ? 'Accepted' :
+	                                (offer.status == 'REJECTED' ? 'Rejected' : 'Pending')}"
+	                      th:classappend="${offer.status}">
+	                </span>
+            </td>
+
+            <!-- ONLY EDIT BUTTON -->
+            <td>
+                <a th:href="@{/offer/edit/{id}(id=${offer.id})}" class="edit-btn">
+                    Edit
+                </a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
