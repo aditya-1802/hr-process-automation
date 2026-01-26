@@ -2,18 +2,15 @@ package com.hrprocessautomation.hr_process_automation.service;
 
 import com.hrprocessautomation.hr_process_automation.model.Offer;
 import com.hrprocessautomation.hr_process_automation.repository.OfferRepository;
-
 import jakarta.mail.internet.MimeMessage;
-
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Sort;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class OfferService {
@@ -30,7 +27,7 @@ public class OfferService {
     // Get offer by ID
     public Offer getOfferById(Long id) {
         return offerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Offer not found"));
+                .orElseThrow(() -> new RuntimeException("Offer not found with id: " + id));
     }
 
     // Save or update offer
@@ -38,10 +35,10 @@ public class OfferService {
         return offerRepository.save(offer);
     }
 
-    // Save + Send Offer Mail
+    // Save offer + Send mail
     public void saveAndSendOffer(Offer offer) {
 
-        // 1️⃣ Save offer first (ID required for links)
+        // 1️⃣ Save offer first
         offer.setStatus("SENT");
         offer = offerRepository.save(offer);
 
@@ -50,21 +47,21 @@ public class OfferService {
 
         try {
             MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            MimeMessageHelper helper =
+                    new MimeMessageHelper(message, true, "UTF-8");
 
             helper.setTo(offer.getEmail());
-            helper.setSubject("Offer Letter - Tyroads Global | Ref #" + offer.getId());
+            helper.setSubject("Offer Letter | Ref #" + offer.getId());
+            helper.setFrom("hr@yourdomain.com");
 
             // 3️⃣ Accept / Reject links
-            String acceptLink =
-                    "http://localhost:8080/offer/respond/" + offer.getId() + "?action=accept";
+            String baseUrl = "http://localhost:8080"; // change after deploy
+            String acceptLink = baseUrl + "/offer/respond/" + offer.getId() + "?action=accept";
+            String rejectLink = baseUrl + "/offer/respond/" + offer.getId() + "?action=reject";
 
-            String rejectLink =
-                    "http://localhost:8080/offer/respond/" + offer.getId() + "?action=reject";
-
-            // 4️⃣ HTML Mail Body
+            // 4️⃣ HTML Body
             String html = """
-                <div style="font-family:Segoe UI,Arial,sans-serif; line-height:1.6;">
+                <div style="font-family:Arial,sans-serif; line-height:1.6;">
                     <h2>Dear %s,</h2>
 
                     <p>
@@ -72,37 +69,27 @@ public class OfferService {
                         <b>%s</b> at <b>Tyroads Global</b>.
                     </p>
 
-                    <p>
-                        <b>Offered Salary:</b> ₹%.2f
-                    </p>
+                    <p><b>Offered Salary:</b> ₹%.2f</p>
 
-                    <p>Please review your offer letter attached below.</p>
+                    <p>Please find your offer letter attached.</p>
 
                     <div style="margin:25px 0;">
                         <a href="%s"
-                           style="padding:12px 22px;
-                           background:#22c55e;
-                           color:white;
-                           text-decoration:none;
-                           border-radius:6px;
-                           font-weight:600;">
+                           style="padding:12px 22px;background:#22c55e;color:#fff;
+                           text-decoration:none;border-radius:6px;">
                             ✅ Accept Offer
                         </a>
 
                         &nbsp;&nbsp;
 
                         <a href="%s"
-                           style="padding:12px 22px;
-                           background:#ef4444;
-                           color:white;
-                           text-decoration:none;
-                           border-radius:6px;
-                           font-weight:600;">
+                           style="padding:12px 22px;background:#ef4444;color:#fff;
+                           text-decoration:none;border-radius:6px;">
                             ❌ Reject Offer
                         </a>
                     </div>
 
-                    <p style="margin-top:30px;">
+                    <p>
                         Regards,<br>
                         <b>HR Team</b><br>
                         Tyroads Global
@@ -116,16 +103,15 @@ public class OfferService {
                     rejectLink
             );
 
-            // 5️⃣ Set HTML (IMPORTANT)
             helper.setText(html, true);
 
-            // 6️⃣ Attach PDF
+            // 5️⃣ Attach PDF
             helper.addAttachment(
                     "Offer_Letter_" + offer.getName() + ".pdf",
                     new ByteArrayResource(pdfBytes)
             );
 
-            // 7️⃣ Send mail
+            // 6️⃣ Send mail
             mailSender.send(message);
 
         } catch (Exception e) {
@@ -134,18 +120,17 @@ public class OfferService {
             throw new RuntimeException("Failed to send offer mail", e);
         }
     }
-    
+
     public List<Offer> getAllOffers() {
-        return offerRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
+        return offerRepository.findAll(
+                Sort.by(Sort.Direction.DESC, "createdAt"));
     }
 
     public List<Offer> getOffersByStatus(String status) {
         return offerRepository.findByStatus(status);
     }
 
-    public List<Offer> getOffersByResponse(String status) {
-		return offerRepository.findByCandidateResponse(status);
-	}
-
-
+    public List<Offer> getOffersByResponse(String response) {
+        return offerRepository.findByCandidateResponse(response);
+    }
 }
