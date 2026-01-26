@@ -1,7 +1,11 @@
 package com.hrprocessautomation.hr_process_automation.service;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.MediaType;
 
-import okhttp3.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +18,9 @@ public class BrevoEmailService {
     private String apiKey;
 
     private final OkHttpClient client = new OkHttpClient();
+
+    private static final MediaType JSON
+            = MediaType.get("application/json; charset=utf-8");
 
     public void sendOfferEmail(
             String toEmail,
@@ -54,12 +61,14 @@ public class BrevoEmailService {
                 .url("https://api.brevo.com/v3/smtp/email")
                 .addHeader("api-key", apiKey)
                 .addHeader("Content-Type", "application/json")
-                .post(RequestBody.create(json, MediaType.parse("application/json")))
+                .post(RequestBody.create(json, JSON))
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) {
-                throw new RuntimeException("Brevo failed: " + response.body().string());
+                throw new RuntimeException(
+                        "Brevo failed: " + response.body().string()
+                );
             }
         }
     }
